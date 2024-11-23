@@ -73,8 +73,11 @@ app.post("/submit-prd", async (req, res) => {
         const response = await axios.post('http://localhost:5001/generate-prd', prdData);
         console.log("PRD processed by LLM:", response.data);
 
+        // Debugging: Log the overview from the response
+        console.log("Generated PRD Overview:", response.data.prd.overview);
+
         // Send the generated PRD JSON back to the frontend
-        res.json({ message: "PRD data submitted and uploaded to cloud storage.", prd: response.data });
+        res.json({ message: "PRD data submitted and uploaded to cloud storage.", prd: response.data.prd });
       } catch (error) {
         console.error("Error processing PRD with LLM:", error);
         res.status(500).json({ message: "Error processing PRD with LLM." });
@@ -85,6 +88,27 @@ app.post("/submit-prd", async (req, res) => {
   } catch (error) {
     console.error("Error uploading PRD data:", error);
     res.status(500).json({ message: "Error uploading PRD data." });
+  }
+});
+
+// New endpoint to fetch the JSON file from Google Cloud Storage
+app.get("/fetch-prd/:fileName", async (req, res) => {
+  const { fileName } = req.params;
+
+  try {
+    const bucket = storage.bucket(bucketName);
+    const file = bucket.file(fileName);
+
+    const [contents] = await file.download();
+    const prdData = JSON.parse(contents.toString());
+
+    // Debugging: Log the overview from the fetched PRD data
+    console.log("Fetched PRD Overview:", prdData.overview);
+
+    res.json(prdData);
+  } catch (error) {
+    console.error("Error fetching PRD data:", error);
+    res.status(500).json({ message: "Error fetching PRD data." });
   }
 });
 

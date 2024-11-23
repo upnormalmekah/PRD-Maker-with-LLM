@@ -3,7 +3,10 @@ import React from 'react';
 const PRDDisplay = ({ prdData }) => {
   if (!prdData) return null;
 
-  console.log("PRD Data:", prdData);
+  // Access the nested prd object
+  const prd = prdData.prd;
+
+  console.log("PRD Data:", prd);
 
   const renderMarkdown = (text) => {
     return text?.split('\n').map((line, index) => {
@@ -48,28 +51,28 @@ const PRDDisplay = ({ prdData }) => {
       {/* Header Section */}
       <div className="bg-white rounded-lg p-6 mb-8 shadow-sm">
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          {prdData.prd_identity?.product_name} - PRD
+          {prd.prd_identity?.product_name} - PRD
         </h1>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-gray-600">Document Version</p>
-            <p className="font-semibold">{prdData.prd_identity?.document_version}</p>
+            <p className="font-semibold">{prd.prd_identity?.document_version}</p>
           </div>
           <div>
             <p className="text-gray-600">Document Stage</p>
-            <p className="font-semibold">{prdData.prd_identity?.document_stage}</p>
+            <p className="font-semibold">{prd.prd_identity?.document_stage}</p>
           </div>
           <div>
             <p className="text-gray-600">Document Owner</p>
-            <p className="font-semibold">{prdData.prd_identity?.document_owner}</p>
+            <p className="font-semibold">{prd.prd_identity?.document_owner}</p>
           </div>
           <div>
             <p className="text-gray-600">Developer</p>
-            <p className="font-semibold">{prdData.prd_identity?.developer}</p>
+            <p className="font-semibold">{prd.prd_identity?.developer}</p>
           </div>
           <div>
             <p className="text-gray-600">Stakeholder</p>
-            <p className="font-semibold">{prdData.prd_identity?.stakeholder}</p>
+            <p className="font-semibold">{prd.prd_identity?.stakeholder}</p>
           </div>
         </div>
       </div>
@@ -78,14 +81,14 @@ const PRDDisplay = ({ prdData }) => {
       <div className="bg-white rounded-lg p-6 mb-8 shadow-sm">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
         <div className="prose max-w-none">
-          {renderMarkdown(prdData.overview)}
+          {renderMarkdown(prd.overview)}
         </div>
       </div>
 
       {/* DARCI Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4">DARCI Framework</h2>
-        {Object.entries(prdData.darci || {}).map(([role, data]) => 
+        {Object.entries(prd.darci || {}).map(([role, data]) => 
           renderDARCIRole(data, role)
         )}
       </div>
@@ -96,15 +99,15 @@ const PRDDisplay = ({ prdData }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-gray-600">Start Date</p>
-            <p className="font-semibold">{new Date(prdData.project_timeline?.start_date).toLocaleDateString()}</p>
+            <p className="font-semibold">{new Date(prd.project_timeline?.start_date).toLocaleDateString()}</p>
           </div>
           <div>
             <p className="text-gray-600">End Date</p>
-            <p className="font-semibold">{new Date(prdData.project_timeline?.end_date).toLocaleDateString()}</p>
+            <p className="font-semibold">{new Date(prd.project_timeline?.end_date).toLocaleDateString()}</p>
           </div>
           <div className="col-span-2">
             <p className="text-gray-600">Project Manager</p>
-            <p className="font-semibold">{prdData.project_timeline?.pic}</p>
+            <p className="font-semibold">{prd.project_timeline?.pic}</p>
           </div>
         </div>
       </div>

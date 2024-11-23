@@ -133,7 +133,7 @@ def generate_prd():
     blob = bucket.blob(file_name)
     blob.upload_from_string(json.dumps(prd, indent=2), content_type='application/json')
     
-    return jsonify({"message": "PRD generated and uploaded to cloud storage.", "file_name": file_name})
+    return jsonify({"message": "PRD generated and uploaded to cloud storage.", "file_name": file_name, "prd": prd})
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

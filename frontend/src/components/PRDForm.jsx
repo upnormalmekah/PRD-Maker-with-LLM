@@ -53,7 +53,10 @@ const PRDForm = () => {
 
             const result = await response.json();
             console.log("Server response:", result);
+
+            // Set the generated PRD data
             setGeneratedPRD(result.prd);
+            console.log("Generated PRD:", result.prd);
         } catch (error) {
             console.error("Error submitting PRD:", error);
             setError(error.message);
