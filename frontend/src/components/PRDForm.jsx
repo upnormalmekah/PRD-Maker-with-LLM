@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PRDDisplay from './PRDDisplay';
 
 const PRDForm = () => {
     const [documentVersion, setDocumentVersion] = useState('');
@@ -11,18 +12,20 @@ const PRDForm = () => {
         decider: '',
         accountable: '',
         responsible: '',
-        consulted: '', 
+        consulted: '',
         informed: ''
     });
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-
     const [generatedPRD, setGeneratedPRD] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+        setLoading(true);
+        setError(null);
+
         const prdData = {
             documentVersion,
             productName,
@@ -34,9 +37,9 @@ const PRDForm = () => {
             startDate,
             endDate,
         };
-    
+
         try {
-            const response = await fetch("http://localhost:5000/process-prd", {
+            const response = await fetch("http://localhost:5000/submit-prd", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -44,17 +47,20 @@ const PRDForm = () => {
                 body: JSON.stringify(prdData),
             });
 
-            const result = await response.json();
-            if (result.prd) {
-                console.log("Generated PRD:", result.prd);
-            } else {
-                console.error("Error:", result.error);
+            if (!response.ok) {
+                throw new Error("Failed to submit PRD");
             }
+
+            const result = await response.json();
+            console.log("Server response:", result);
+            setGeneratedPRD(result.prd);
         } catch (error) {
             console.error("Error submitting PRD:", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
-    
 
     return (
         <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
@@ -69,7 +75,7 @@ const PRDForm = () => {
                                 <span className="block font-medium text-gray-700">Document Version:</span>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="input input-bordered w-full"
                                     value={documentVersion}
                                     onChange={(e) => setDocumentVersion(e.target.value)}
                                     required
@@ -79,7 +85,7 @@ const PRDForm = () => {
                                 <span className="block font-medium text-gray-700">Product Name:</span>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="input input-bordered w-full"
                                     value={productName}
                                     onChange={(e) => setProductName(e.target.value)}
                                     required
@@ -88,7 +94,7 @@ const PRDForm = () => {
                             <label className="block">
                                 <span className="block font-medium text-gray-700">Document Owner:</span>
                                 <select
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="select select-bordered w-full"
                                     value={documentOwner}
                                     onChange={(e) => setDocumentOwner(e.target.value)}
                                     required
@@ -101,7 +107,7 @@ const PRDForm = () => {
                             <label className="block">
                                 <span className="block font-medium text-gray-700">Developer:</span>
                                 <select
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="select select-bordered w-full"
                                     value={developer}
                                     onChange={(e) => setDeveloper(e.target.value)}
                                     required
@@ -114,7 +120,7 @@ const PRDForm = () => {
                             <label className="block">
                                 <span className="block font-medium text-gray-700">Stakeholder:</span>
                                 <select
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="select select-bordered w-full"
                                     value={stakeholder}
                                     onChange={(e) => setStakeholder(e.target.value)}
                                     required
@@ -133,7 +139,7 @@ const PRDForm = () => {
                         <label className="block mt-4">
                             <span className="block font-medium text-gray-700">Project Overview:</span>
                             <textarea
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                className="textarea textarea-bordered w-full"
                                 value={projectOverview}
                                 onChange={(e) => setProjectOverview(e.target.value)}
                                 required
@@ -149,7 +155,7 @@ const PRDForm = () => {
                                 <label className="block" key={role}>
                                     <span className="block font-medium text-gray-700">{role}:</span>
                                     <select
-                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        className="select select-bordered w-full"
                                         value={darciRoles[role.toLowerCase()]}
                                         onChange={(e) => setDarciRoles({ ...darciRoles, [role.toLowerCase()]: e.target.value })}
                                         required
@@ -171,7 +177,7 @@ const PRDForm = () => {
                                 <span className="block font-medium text-gray-700">Start Date:</span>
                                 <input
                                     type="date"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="input input-bordered w-full"
                                     value={startDate}
                                     onChange={(e) => setStartDate(e.target.value)}
                                     required
@@ -181,7 +187,7 @@ const PRDForm = () => {
                                 <span className="block font-medium text-gray-700">End Date:</span>
                                 <input
                                     type="date"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="input input-bordered w-full"
                                     value={endDate}
                                     onChange={(e) => setEndDate(e.target.value)}
                                     required
@@ -190,10 +196,22 @@ const PRDForm = () => {
                         </div>
                     </fieldset>
 
-                    <button type="submit" className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        Create
+                    <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+                        {loading ? 'Generating...' : 'Create'}
                     </button>
                 </form>
+
+                {error && (
+                    <div className="mt-8 p-4 bg-red-100 text-red-700 rounded-lg">
+                        <p>Error: {error}</p>
+                    </div>
+                )}
+
+                {generatedPRD && (
+                    <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+                        <PRDDisplay prdData={generatedPRD} />
+                    </div>
+                )}
             </div>
         </div>
     );
