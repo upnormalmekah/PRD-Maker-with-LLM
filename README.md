@@ -51,7 +51,7 @@ We are a team of Bangkit 2024 Cohorts from different learning paths and universi
 ## **How to Contribute**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/PRD-Maker-With-LLM.git
+   git clone https://github.com/MustaFathur/PRD-Maker-With-LLM.git
    cd PRD-Maker-With-LLM
 2. Install dependencies and Run the services locally:
    ```bash
