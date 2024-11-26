@@ -58,7 +58,8 @@ We are a team of Bangkit 2024 Cohorts from different learning paths and universi
    # For frontend
    cd Cloud_Computing/frontend
    npm install
-   npm start
+   npm run tailwind
+   npm run dev
 
    # For backend (Express)
    cd Cloud_Computing/backend
